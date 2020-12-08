@@ -2,23 +2,20 @@ require 'set'
 
 data = File.read("input.txt").split("\n")
 
+LowerBound = lambda { |r|
+  new = r.min+(r.max - r.min)/2
+  [(r.min..new), new]
+}
+UpperBound = lambda { |r|
+  new = r.min + ((r.max - r.min)/2.0).round
+  [(new..r.max), new]
+}
+
 Operators = {
-  "F" => lambda { |r|
-    new = r.min+(r.max - r.min)/2
-    [(r.min..new), new]
-  },
-  "B" => lambda { |r|
-    new = r.min + ((r.max - r.min)/2.0).round
-    [(new..r.max), new]
-  },
-  "L" => lambda { |r|
-    new = r.min+(r.max - r.min)/2
-    [(r.min..new), new]
-  },
-  "R" => lambda { |r|
-    new = r.min+((r.max - r.min)/2.0).round
-    [(new..r.max), new]
-  }
+  "F" => LowerBound,
+  "B" => UpperBound,
+  "L" => LowerBound,
+  "R" => UpperBound
 }
 
 products = Set[]
