@@ -1,12 +1,13 @@
-data = File.read("input.txt").split("\n")
+Input = ARGV.empty? ? "input.txt" : ARGV[0]
+data = File.read(Input).split("\n")
 
 LowerBound = lambda { |r|
   new = r.min+(r.max - r.min)/2
-  [(r.min..new), new]
+  (r.min..new)
 }
 UpperBound = lambda { |r|
   new = r.min + ((r.max - r.min)/2.0).round
-  [(new..r.max), new]
+  (new..r.max)
 }
 
 Operators = {
@@ -23,17 +24,15 @@ data.each { |entry|
   cols = entry.slice (7..9)
   rrange = (0..127)
   crange = (0..7)
-  row = 0
-  col = 0
   while !rows.empty? do
     char = rows.slice! 0
-    rrange, row = Operators[char].call(rrange)
+    rrange = Operators[char].call(rrange)
   end
   while !cols.empty? do
     char = cols.slice! 0
-    crange, col = Operators[char].call(crange)
+    crange = Operators[char].call(crange)
   end  
-  highest = [highest, row*8 + col].max
+  highest = [highest, rrange.first*8 + crange.first].max
 }
 
 puts highest

@@ -1,14 +1,15 @@
 require 'set'
 
-data = File.read("input.txt").split("\n")
+Input = ARGV.empty? ? "input.txt" : ARGV[0]
+data = File.read(Input).split("\n")
 
 LowerBound = lambda { |r|
   new = r.min+(r.max - r.min)/2
-  [(r.min..new), new]
+  (r.min..new)
 }
 UpperBound = lambda { |r|
   new = r.min + ((r.max - r.min)/2.0).round
-  [(new..r.max), new]
+  (new..r.max)
 }
 
 Operators = {
@@ -25,17 +26,23 @@ data.each { |entry|
   cols = entry.slice (7..9)
   rrange = (0..127)
   crange = (0..7)
-  row = 0
-  col = 0
   while !rows.empty? do
     char = rows.slice! 0
-    rrange, row = Operators[char].call(rrange)
+    rrange = Operators[char].call(rrange)
   end
   while !cols.empty? do
     char = cols.slice! 0
-    crange, col = Operators[char].call(crange)
+    crange = Operators[char].call(crange)
   end  
-  products.add(row*8 + col)
+  products.add(rrange.first*8 + crange.first)
 }
 
-puts "Missing: #{((Set.new (products.min..products.max)) - products).to_a}"
+missing = ((Set.new (products.min..products.max)) - products).to_a
+seat = missing.first
+missing.each_cons(2) { |two|
+  first, second = two
+  next if second == first + 1
+  seat = first
+  break
+}
+puts seat
