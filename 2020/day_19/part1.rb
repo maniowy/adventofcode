@@ -1,5 +1,3 @@
-require 'strscan'
-
 Input = ARGV.empty? ? "input.txt" : ARGV.first
 rules, data = File.read(Input).split("\n\n")
 
